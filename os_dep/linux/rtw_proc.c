@@ -1384,8 +1384,12 @@ ssize_t proc_set_macaddr_acl(struct file *file, const char __user *buffer, size_
 		while (c != NULL) {
 			if (sscanf(c, MAC_SFMT, MAC_SARG(addr)) != 6)
 				break;
-
+		
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			is_bcast = is_broadcast_ether_addr(addr);
+#else
 			is_bcast = is_broadcast_mac_addr(addr);
+#endif
 			if (is_bcast
 				|| rtw_check_invalid_mac_address(addr, 0) == _FALSE
 			) {
@@ -2070,7 +2074,11 @@ static void rtw_set_tx_bw_mode(struct _ADAPTER *adapter, u8 bw_mode)
 
 		for (i = 0; i < MACID_NUM_SW_LIMIT; i++) {
 			sta = macid_ctl->sta[i];
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+			if (sta && !is_broadcast_ether_addr(sta->cmn.mac_addr))
+#else
 			if (sta && !is_broadcast_mac_addr(sta->cmn.mac_addr))
+#endif
 				rtw_dm_ra_mask_wk_cmd(adapter, (u8 *)sta);
 		}
 	}

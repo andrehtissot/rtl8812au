@@ -31,10 +31,15 @@ u8 rtw_validate_bssid(u8 *bssid)
 {
 	u8 ret = _TRUE;
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	if (is_zero_ether_addr(bssid)
+	    || is_broadcast_ether_addr(bssid)
+	    || is_multicast_ether_addr(bssid))
+#else
 	if (is_zero_mac_addr(bssid)
 	    || is_broadcast_mac_addr(bssid)
-	    || is_multicast_mac_addr(bssid)
-	   )
+	    || is_multicast_mac_addr(bssid))
+#endif
 		ret = _FALSE;
 
 	return ret;

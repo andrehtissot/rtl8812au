@@ -1616,6 +1616,7 @@ enum ieee80211_state {
 	(((Addr[2]) & 0xff) == 0xff) && (((Addr[3]) & 0xff) == 0xff) && (((Addr[4]) & 0xff) == 0xff) && \
 				     (((Addr[5]) & 0xff) == 0xff))
 #else
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0))
 static inline int is_multicast_mac_addr(const u8 *addr)
 {
 	return (addr[0] != 0xff) && (0x01 & addr[0]);
@@ -1632,6 +1633,7 @@ static inline int is_zero_mac_addr(const u8 *addr)
 	return ((addr[0] == 0x00) && (addr[1] == 0x00) && (addr[2] == 0x00) &&   \
 		(addr[3] == 0x00) && (addr[4] == 0x00) && (addr[5] == 0x00));
 }
+#endif
 #endif /* PLATFORM_FREEBSD */
 
 #define CFG_IEEE80211_RESERVE_FCS (1<<0)

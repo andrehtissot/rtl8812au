@@ -13020,8 +13020,13 @@ bypass_active_keep_alive:
 				psta = LIST_CONTAINOR(plist, struct sta_info, hash_list);
 				plist = get_next(plist);
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+				if (is_broadcast_ether_addr(psta->cmn.mac_addr))
+					continue;
+#else
 				if (is_broadcast_mac_addr(psta->cmn.mac_addr))
 					continue;
+#endif
 
 				if (chk_adhoc_peer_is_alive(psta) || !psta->expire_to)
 					psta->expire_to = pstapriv->adhoc_expire_to;

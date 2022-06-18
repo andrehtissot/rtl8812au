@@ -1289,7 +1289,12 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
 	param->u.crypt.err = 0;
 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
 
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	if (is_broadcast_ether_addr(param->sta_addr)) {
+#else
 	if (is_broadcast_mac_addr(param->sta_addr)) {
+#endif
 		if (param->u.crypt.idx >= WEP_KEYS
 			#ifdef CONFIG_IEEE80211W
 			&& param->u.crypt.idx > BIP_MAX_KEYID
@@ -1543,7 +1548,11 @@ static int rtw_cfg80211_set_encryption(struct net_device *dev, struct ieee_param
 	param->u.crypt.err = 0;
 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	if (is_broadcast_ether_addr(param->sta_addr)) {
+#else
 	if (is_broadcast_mac_addr(param->sta_addr)) {
+#endif
 		if (param->u.crypt.idx >= WEP_KEYS
 			#ifdef CONFIG_IEEE80211W
 			&& param->u.crypt.idx > BIP_MAX_KEYID

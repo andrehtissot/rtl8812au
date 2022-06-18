@@ -2678,7 +2678,11 @@ int rtw_acl_remove_sta(_adapter *adapter, u8 period, const u8 *addr)
 	struct sta_priv *stapriv = &adapter->stapriv;
 	struct wlan_acl_pool *acl;
 	_queue	*acl_node_q;
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 18, 0))
+	u8 is_baddr = is_broadcast_ether_addr(addr);
+#else
 	u8 is_baddr = is_broadcast_mac_addr(addr);
+#endif
 	u8 match = 0;
 
 	if (period >= RTW_ACL_PERIOD_NUM) {
